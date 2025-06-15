@@ -1,6 +1,10 @@
+local config = require(script.Parent.Parent.Config)
+
 local textChatService = game:GetService("TextChatService")
 local httpService = game:GetService("HttpService")
 local players = game:GetService("Players")
+
+local group = config["GroupID"]
 
 local messageId = 0
 
@@ -11,15 +15,15 @@ local initialize = function(chatVariables)
 	local history = {}
 
 	local network = chatVariables.network
-	
+
 	local getMetadata = function(message)
 		return httpService:JSONDecode(message.Metadata or "[]")
 	end
-	
+
 	local verifyValidity = function(current,editing)
 		return current:split("-")[1] == editing:split("-")[1] 
 	end
-	
+
 	function chatVariables:newMessageId()
 		messageId += 1
 		return messageId
@@ -36,17 +40,35 @@ local initialize = function(chatVariables)
 			if replyingTo then
 				replyingTo = chatVariables.createMessage:guidToId(replyingTo)
 			end
+			local usernameSender = player.DisplayName
+			local playerTag = ""
+			local team = player.Team
+			local fontColor = team and team.TeamColor.Color or Color3.new(1, 1, 1)
+			if group then
+				playerTag = player:GetRoleInGroup(group)
+
+				-- Extract the role within brackets or assign "Guest" if no role
+				playerTag = playerTag:match("%[(.-)%]") or "Guest"
+
+				-- Remove the brackets
+				playerTag = playerTag:gsub("%[", ""):gsub("%]", "")
+
+				usernameSender = string.format("   %s", player.Name)
+			end
+
 			local modifier = chatVariables.createMessage.new({
 				metadata = metadata,
-				displayName = player.DisplayName,
+				displayName = usernameSender,
 				username = player.Name,
+				tag = playerTag,
 				id = messageId,
 				guid = message.MessageId,
 				text = message.Text,
 				sentAt = message.Timestamp.UnixTimestamp,
 				senderId = userId,
 				replyingTo = replyingTo,
-				object = message
+				object = message,
+				nameColor = fontColor
 			},true)			
 			table.insert(history,modifier)
 			return modifier
@@ -84,6 +106,7 @@ local initialize = function(chatVariables)
 								reconstructed
 							)
 						else
+
 							modifiers[message.MessageId]:delete()
 						end
 					end
@@ -108,13 +131,21 @@ local initialize = function(chatVariables)
 			end
 		end
 	end)
-	
+
 	network.onClientEvent("reactToMessage",function(data)
+		--print("Reaction signal received.")
 		if modifiers[data.messageId] then
 			modifiers[data.messageId]:addReaction(data.player,data.reactionEmoji)
 		end
 	end)
-	
+
+	network.onClientEvent("deleteMessage", function(data)
+		--print("Delete message signal received")
+		if modifiers[data.messageId] then
+			modifiers[data.messageId]:delete()
+		end
+	end)
+
 	chatVariables.events.onMessage = chatVariables.signal.new()
 end
 

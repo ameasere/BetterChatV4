@@ -1,3 +1,5 @@
+local config = require(script.Parent.Parent.Config)
+
 local httpService = game:GetService("HttpService")
 local userInputService = game:GetService("UserInputService")
 local separateTime = 50
@@ -7,6 +9,10 @@ local holdDurations = {
 	["Computer"] = 0.6,
 	["Phone"] = 0.45
 }
+
+if config["GroupRanks"] then
+	UsernameIconAssets = config["GroupRankAssets"]
+end
 
 local initialize = function(chatVariables)
 	local lineDetector = chatVariables.lineDetector
@@ -25,11 +31,12 @@ local initialize = function(chatVariables)
 	local getScrollerSize = function()
 		return scroller.AbsoluteSize
 	end
-	
+
 	local colorize = function(name,messageData,suffix)
+		--print("Colorization: " .. chatVariables.richText:colorize(name .. (suffix or ""),messageData.nameColor))
 		return chatVariables.richText:colorize(name .. (suffix or ""),messageData.nameColor or utility:getNameColor(
 			name
-		))
+			))
 	end
 
 	local designs = {
@@ -79,6 +86,7 @@ local initialize = function(chatVariables)
 				textHandler:setText(label,handle(text,data),data.object)
 			end,
 			delete = function()
+				--"Delete local function hit...")
 				local base = controller.connectedTo
 				local removeFrom = base.controllers
 				local idx = table.find(removeFrom,controller)
@@ -103,6 +111,7 @@ local initialize = function(chatVariables)
 			end,
 			data = data,
 			addReaction = function(self,player,reaction)
+				--print("Reaction requested: " .. reaction)
 				if not bubble:FindFirstChild("ReactionContainer") then
 					local frame = Instance.new("Frame")
 					frame.Parent = bubble
@@ -249,12 +258,27 @@ local initialize = function(chatVariables)
 			messageObjectById[messageData.id] = messageBase
 
 			messageBase.Actual.Icon.Visible = iconEnabled
-			messageBase.Username.Text = messageData.displayName or messageData.username
+			if messageData.nameColor and messageData.displayName ~= "System" then
+				messageBase.Username.Text = colorize(messageData.displayName,messageData) .. " "
+			else
+				messageBase.Username.Text = messageData.displayName or messageData.username
+			end
+
+			if config["GroupRanks"] then
+				local rank = messageData.tag
+				local rankIcon = UsernameIconAssets[rank]
+				if rankIcon == nil then
+					rankIcon = "rbxassetid://"
+				end
+				messageBase.Username.Rank.Image = rankIcon
+			end
 
 			table.insert(bases,{
 				object = messageBase,
 				controllers = {},
 				delete = function(self)
+					messagesByIds[messageData.id] = nil
+					--Delete the object
 					self.object:Destroy()
 				end,
 			})
@@ -350,7 +374,10 @@ local initialize = function(chatVariables)
 								bubble.DefaultBubble:FindFirstChildOfClass("UIPadding").PaddingLeft = UDim.new(0,0)
 							end
 						end
+
+						-- Colorize the author's name
 						local label = bubble.DefaultBubble.Label
+
 						textHandler:setText(label,handle(messageData.text,messageData),messageData.object)
 
 						local connections = scaleBubble(bubble,label,messageBase,maxSizeConstraint,messageData)						
@@ -434,6 +461,7 @@ local initialize = function(chatVariables)
 			else
 				local previous = messagesByIds[messageData.id - 1] or {}
 				if messageData.senderId == previous.senderId and (messageData.sentAt - previous.sentAt <= separateTime) and (not previous.replyingTo) then
+					-- Print out all of the messages
 					local previous2 = messagesByIds[messageData.id - 2]
 					local i,origin = 0,nil
 					if previous2 then
@@ -455,7 +483,37 @@ local initialize = function(chatVariables)
 					else
 						origin = previous
 					end
-					return newModifier(origin.access:createBubble("DefaultBubble",messageData),messageData)
+					-- Check if the previous messages actually exist in the GUI
+					if origin then
+						--print(origin)
+						local scroller = game.Players.LocalPlayer.PlayerGui.Chat.Main.Scroller
+						local originFound = false
+						local playerName = game.Players.LocalPlayer.Name
+						local textMatch = false
+						local userMatch = false
+						for _, child in scroller:GetDescendants() do
+							if textMatch and userMatch then break end
+							if child.Name == "TextLabel" then
+								--print("Child Text: " .. child.Text .. " | Origin Text: " .. origin.text)
+								if child.Text == origin.text then
+									textMatch = true
+								end
+							else if child.Name == "Username" then
+									-- If playerName in origin.Text (THEY WONT BE A MATCH, ITS A SUBSTRING)
+									if string.find(origin.displayName, playerName) then
+										userMatch = true
+									end
+								end
+							end
+						end
+						--print("UserMatch: " .. tostring(userMatch) .. " | textMatch: " .. tostring(textMatch))
+						if userMatch and textMatch then
+							return newModifier(origin.access:createBubble("DefaultBubble",messageData),messageData)
+						else
+							instantiate()
+							return newModifier(createBubble("DefaultBubble",messageData),messageData)
+						end
+					end
 				else
 					instantiate()
 					return newModifier(createBubble("DefaultBubble",messageData),messageData)
@@ -500,7 +558,11 @@ local initialize = function(chatVariables)
 					end
 				end)
 			elseif action == "Delete" then
+				--print("Firing deletion signal...")
+				--print("Vararg count:", select("#", ...))
+				chatVariables.network:fire("deleteMessage",currentContext.data.guid,({...})[1])
 			elseif action == "React" then
+				--print("Firing reaction signal...")
 				chatVariables.network:fire("reactToMessage",currentContext.data.guid,({...})[1])
 			end
 		end

@@ -1,0 +1,3 @@
+return {
+	["AdonisCompatibility"] = true
+}
