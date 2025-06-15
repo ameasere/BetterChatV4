@@ -385,7 +385,7 @@ local initialize = function(chatVariables)
 					elseif bubbleClass == "ReplyStartBubble" then						
 						messageBase.Username.Text = chatVariables.localization:localize("ReplyingTo",nil,{
 							["SPEAKER_1"] = presentData.displayName,
-							["SPEAKER_2"] = messageData.displayName
+							["SPEAKER_2"] = messageData.displayName:gsub("   ", "")
 						})
 						textHandler:setText(bubble.OriginalBubble.Label,handle(messageData.text,messageData),messageData.object)
 						toReturn = bubble.OriginalBubble
@@ -435,7 +435,8 @@ local initialize = function(chatVariables)
 				local previousData = messagesByIds[messageData.replyingTo]
 				if previousData.senderId == messageData.senderId then
 					local difference = messageData.id - previousData.id
-					if difference == 1 then
+					if difference == 1 and previousData.access then
+						print("Using the access on the old message...")
 						return newModifier(previousData.access:createBubble("ReplyingToPreviousBubbleChain",messageData),messageData)
 					else
 						instantiate()
@@ -491,27 +492,56 @@ local initialize = function(chatVariables)
 						local playerName = game.Players.LocalPlayer.Name
 						local textMatch = false
 						local userMatch = false
-						for _, child in scroller:GetDescendants() do
+						local reconstructedText = ""
+						local userMatch = false
+
+						for _, message in scroller:GetChildren() do
 							if textMatch and userMatch then break end
-							if child.Name == "TextLabel" then
-								--print("Child Text: " .. child.Text .. " | Origin Text: " .. origin.text)
-								if child.Text == origin.text then
-									textMatch = true
+							if not message:IsA("Frame") and message.Name ~= "Message" then continue end
+							-- Step 1: Match Username
+							local usernameLabel = message:FindFirstChild("Username")
+							if not usernameLabel then continue end
+							-- Replace "   " in text with nothing
+							local parentLabel = nil
+							-- lstrip the username
+							if usernameLabel and string.find(usernameLabel.Text, origin.displayName) then
+								userMatch = true
+							else
+								continue
+							end
+							-- Find Label in the descendants of the message
+							local messageDescendants = message:GetDescendants()
+							for _, descendant in messageDescendants do
+								if descendant:IsA("TextLabel") and descendant.Name == "Label" then
+									parentLabel = descendant
+									break
 								end
-							else if child.Name == "Username" then
-									-- If playerName in origin.Text (THEY WONT BE A MATCH, ITS A SUBSTRING)
-									if string.find(origin.displayName, playerName) then
-										userMatch = true
+							end
+							if parentLabel then
+								local reconstructed = ""
+								
+								for _, wordLabel in parentLabel:GetChildren() do
+									if wordLabel:IsA("TextLabel") then
+										reconstructed ..= wordLabel.Text
 									end
+								end
+
+								-- Optional: trim whitespace
+								reconstructed = reconstructed:match("^%s*(.-)%s*$")
+
+								if reconstructed == origin.text then
+									textMatch = true
 								end
 							end
 						end
-						--print("UserMatch: " .. tostring(userMatch) .. " | textMatch: " .. tostring(textMatch))
+
+						--print("UserMatch: " .. tostring(userMatch) .. " | TextMatch: " .. tostring(textMatch))
+
 						if userMatch and textMatch then
-							return newModifier(origin.access:createBubble("DefaultBubble",messageData),messageData)
+							return newModifier(origin.access:createBubble("DefaultBubble", messageData), messageData)
 						else
 							instantiate()
-							return newModifier(createBubble("DefaultBubble",messageData),messageData)
+							return newModifier(createBubble("DefaultBubble", messageData), messageData)
 						end
 					end
 				else
