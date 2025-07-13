@@ -1,4 +1,5 @@
 return function()
+	
 	local chat = Instance.new("ScreenGui")
 	chat.Name = "Chat"
 	chat.ResetOnSpawn = false
@@ -9,7 +10,7 @@ return function()
 	main.BackgroundTransparency = 0.75
 	main.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	main.BorderSizePixel = 0
-	main.Size = UDim2.fromOffset(400, 300)
+	main.Size = UDim2.fromOffset(400, 330)
 
 	local padding = Instance.new("UIPadding")
 	padding.Name = "Padding"
@@ -558,7 +559,7 @@ return function()
 	textButton1.BorderSizePixel = 0
 	textButton1.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json")
 	textButton1.Size = UDim2.fromOffset(20, 20)
-	textButton1.Text = "??"
+	textButton1.Text = "😂"
 	textButton1.TextColor3 = Color3.fromRGB(255, 255, 255)
 	textButton1.TextScaled = true
 	textButton1.TextSize = 14
@@ -574,7 +575,7 @@ return function()
 	textButton2.BorderSizePixel = 0
 	textButton2.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json")
 	textButton2.Size = UDim2.fromOffset(20, 20)
-	textButton2.Text = "??"
+	textButton2.Text = "😢"
 	textButton2.TextColor3 = Color3.fromRGB(255, 255, 255)
 	textButton2.TextScaled = true
 	textButton2.TextSize = 14
@@ -590,7 +591,7 @@ return function()
 	textButton3.BorderSizePixel = 0
 	textButton3.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json")
 	textButton3.Size = UDim2.fromOffset(20, 20)
-	textButton3.Text = "??"
+	textButton3.Text = "🤔"
 	textButton3.TextColor3 = Color3.fromRGB(255, 255, 255)
 	textButton3.TextScaled = true
 	textButton3.TextSize = 14
@@ -606,7 +607,7 @@ return function()
 	textButton4.BorderSizePixel = 0
 	textButton4.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json")
 	textButton4.Size = UDim2.fromOffset(20, 20)
-	textButton4.Text = "??"
+	textButton4.Text = "❤️"
 	textButton4.TextColor3 = Color3.fromRGB(255, 255, 255)
 	textButton4.TextScaled = true
 	textButton4.TextSize = 14
@@ -638,12 +639,42 @@ return function()
 	uIPadding10.PaddingRight = UDim.new(0, 10)
 	uIPadding10.PaddingTop = UDim.new(0, 10)
 	uIPadding10.Parent = options
+	
+	local additionalContext = Instance.new("Frame")
+	additionalContext.Name = "Context"
+	additionalContext.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	additionalContext.BackgroundTransparency = 1
+	additionalContext.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	additionalContext.BorderSizePixel = 0
+	additionalContext.Size = UDim2.fromOffset(400, 25)
+	
+	local additionalContextLabel = Instance.new("TextLabel")
+	additionalContextLabel.Name = "ContextLabel"
+	additionalContextLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	additionalContextLabel.BackgroundTransparency = 1
+	additionalContextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	additionalContextLabel.BorderSizePixel = 0
+	additionalContextLabel.Size = UDim2.fromOffset(390, 25)
+	additionalContextLabel.TextColor = BrickColor.White()
+	additionalContextLabel.TextXAlignment = Enum.TextXAlignment.Left
+	additionalContextLabel.Text = ""
+	additionalContextLabel.Parent = additionalContext
+	
+	local uICorner8 = Instance.new("UICorner")
+	uICorner8.Name = "UICorner"
+	uICorner8.CornerRadius = UDim.new(1, 0)
+	uICorner8.Parent = additionalContextLabel
+
+	additionalContext.Parent = main
 
 	options.Parent = reactions
 
 	reactions.Parent = contextMenu
 
 	contextMenu.Parent = chat
+	
+
+	
 
 	return chat
 end

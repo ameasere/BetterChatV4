@@ -6,6 +6,7 @@ local initialize = function(chatVariables)
 	local utility = chatVariables.utility
 	local channelBar = chatVariables.uiObjects.channelBar
 	local window = chatVariables.uiObjects.window
+	local additionalContext = chatVariables.uiObjects.additionalContext
 
 	local box = chatbar.Chatbox
 	local padding = chatVariables.uiPadding
@@ -33,7 +34,7 @@ local initialize = function(chatVariables)
 		scroller.CanvasPosition -= Vector2.new(0,sizeDifference)
 
 		chatbar.Position = UDim2.fromOffset(0,
-			scroller.AbsoluteSize.Y + cbs + padding * (cbs > 0 and 2 or 1)
+			scroller.AbsoluteSize.Y + cbs + padding * (cbs > 0 and 2 or 1) - 30 -- 30px offset for the new Additional Context feature
 		)
 
 		scroller.Position = UDim2.fromOffset(0,(cbs > 0 and (cbs + padding) or 0))
@@ -65,6 +66,8 @@ local initialize = function(chatVariables)
 			["original"] = box.Text,
 			["context"] = context
 		}))
+		
+		additionalContext.ContextLabel.Text = ""
 	end
 
 	box.FocusLost:Connect(function(enterPressed)
@@ -125,6 +128,7 @@ local initialize = function(chatVariables)
 	
 	function component:unassign()
 		chatVariables.messageContext = nil
+		chatVariables.uiObjects.additionalContext.ContextLabel.Text = ""
 		box.Size = UDim2.new(1,0,1,0)
 		autofillBar.Size = UDim2.new(1,0,1,0)
 		actionIcon.Visible = false

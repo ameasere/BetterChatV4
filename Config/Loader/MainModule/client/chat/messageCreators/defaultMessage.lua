@@ -564,6 +564,11 @@ local initialize = function(chatVariables)
 				chatVariables.components.chatbar:assignActionImage("rbxassetid://6035067844",{
 					replyingTo = currentContext.data.guid
 				})
+				local replyContextPrefix = "┗ Replying to [" .. currentContext.data.tag .. "] " .. currentContext.data.username .. ": "
+				local replyContextPrefixLength = string.len(replyContextPrefix)
+				local charsLeft = 45 - replyContextPrefixLength
+				local replyContext = replyContextPrefix .. (currentContext.data.text:sub(1,charsLeft) .. "...")
+				chatVariables.uiObjects.additionalContext.ContextLabel.Text = replyContext
 			elseif action == "Edit" then
 				local label = currentContext.label
 				label.Visible = false
