@@ -37,8 +37,12 @@ local initialize = function(chatVariables)
 			messageId += 1
 			mapped[message.MessageId] = messageId
 			local replyingTo = metadata.context.replyingTo
+			local isReply = nil
 			if replyingTo then
 				replyingTo = chatVariables.createMessage:guidToId(replyingTo)
+				isReply = true
+			else
+				isReply = false
 			end
 			local usernameSender = player.DisplayName
 			local playerTag = ""
@@ -60,6 +64,7 @@ local initialize = function(chatVariables)
 				metadata = metadata,
 				displayName = usernameSender,
 				username = player.Name,
+				isReply = isReply,
 				tag = playerTag,
 				id = messageId,
 				guid = message.MessageId,

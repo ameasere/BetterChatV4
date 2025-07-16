@@ -5,6 +5,8 @@ local userInputService = game:GetService("UserInputService")
 local separateTime = 50
 local maxBubbles = 100
 
+local debounce = false
+
 local holdDurations = {
 	["Computer"] = 0.6,
 	["Phone"] = 0.45
@@ -244,6 +246,9 @@ local initialize = function(chatVariables)
 	end
 
 	local createMessage = function(messageData,iconEnabled)
+		if debounce then
+			return
+		end
 		if messageData.npc or not messageData.senderId then
 			messageData.id = chatVariables:newMessageId()
 			messageData.guid = httpService:GenerateGUID()
@@ -435,10 +440,12 @@ local initialize = function(chatVariables)
 				local previousData = messagesByIds[messageData.replyingTo]
 				if previousData.senderId == messageData.senderId then
 					local difference = messageData.id - previousData.id
-					if difference == 1 and previousData.access then
-						print("Using the access on the old message...")
+					--print("Difference: " .. difference .. " | Has Previous Access: " .. tostring(previousData.access) .. " | Is it a reply: " .. tostring(messageData.isReply) .. " | Is the original a reply: " .. tostring(previousData.isReply))
+					if difference == 1 and previousData.access and previousData.isReply then
+						--print("Starting reply bubble chain")
 						return newModifier(previousData.access:createBubble("ReplyingToPreviousBubbleChain",messageData),messageData)
 					else
+						--print("Starting new reply bubble.")
 						instantiate()
 						createBubble("ReplyStartBubble",previousData,messageData)
 						return newModifier(createBubble("DefaultBubble",messageData),messageData)
@@ -449,11 +456,13 @@ local initialize = function(chatVariables)
 						for _,message in pairs(messagesByIds) do
 							if(message.id > messageData.replyingTo) then
 								if (previousMessage and previousMessage.senderId == messageData.senderId) and (previousMessage.replyingTo == messageData.replyingTo) then
+									--print("Starting default bubble.")
 									return newModifier(message.access:createBubble("DefaultBubble",messageData),messageData)
 								end
 							end
 						end
 					else
+						--print("Starting reply bubble and default bubble.")
 						instantiate()
 						createBubble("ReplyStartBubble",previousData,messageData)
 						return newModifier(createBubble("DefaultBubble",messageData),messageData)
@@ -550,6 +559,9 @@ local initialize = function(chatVariables)
 				end
 			end
 		end
+		debounce = true
+		task.wait(0.5)
+		debounce = false
 	end
 
 	-- Context menu:
@@ -564,7 +576,12 @@ local initialize = function(chatVariables)
 				chatVariables.components.chatbar:assignActionImage("rbxassetid://6035067844",{
 					replyingTo = currentContext.data.guid
 				})
-				local replyContextPrefix = "┗ Replying to [" .. currentContext.data.tag .. "] " .. currentContext.data.username .. ": "
+				local replyContextPrefix = ""
+				if currentContext.data.tag ~= "" then -- If the operator hasn't configured Group functionality
+					replyContextPrefix = "┗ Replying to [" .. currentContext.data.tag .. "] " .. currentContext.data.username .. ": "
+				else
+					replyContextPrefix = "┗ Replying to " .. currentContext.data.username .. ": "
+				end
 				local replyContextPrefixLength = string.len(replyContextPrefix)
 				local charsLeft = 45 - replyContextPrefixLength
 				local replyContext = replyContextPrefix .. (currentContext.data.text:sub(1,charsLeft) .. "...")

@@ -30,8 +30,9 @@ local initialize = function(chatVariables)
 		local sizeDifference = (scroller.Size - lastSize).Y.Offset
 		
 		additionalContext.Position = UDim2.fromOffset(0,
-			scroller.AbsoluteSize.Y + cbs + padding * (cbs > 0 and 2 or 1) + 5
+			chatbar.Position.Y.Offset + 35
 		)
+	
 	end
 
 	utility.onPropertyChanged(box,"Text",updateSizes)

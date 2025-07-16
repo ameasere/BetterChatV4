@@ -27,14 +27,14 @@ local initialize = function(chatVariables)
 		
 		scroller.Size = UDim2.new(
 			1,0,
-			0,window.AbsoluteSize.Y - chatbar.AbsoluteSize.Y - cbs - padding * (cbs > 0 and 4 or 3)
+			0,window.AbsoluteSize.Y - chatbar.AbsoluteSize.Y - cbs - padding * (cbs > 0 and 4 or 3) - 27 -- 27px offset for the new Additional Context feature
 		)
 		
 		local sizeDifference = (scroller.Size - lastSize).Y.Offset
 		scroller.CanvasPosition -= Vector2.new(0,sizeDifference)
 
 		chatbar.Position = UDim2.fromOffset(0,
-			scroller.AbsoluteSize.Y + cbs + padding * (cbs > 0 and 2 or 1) - 30 -- 30px offset for the new Additional Context feature
+			scroller.AbsoluteSize.Y + cbs + padding * (cbs > 0 and 2 or 1)
 		)
 
 		scroller.Position = UDim2.fromOffset(0,(cbs > 0 and (cbs + padding) or 0))
