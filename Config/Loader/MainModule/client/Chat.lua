@@ -83,6 +83,10 @@ return function()
 	chatbox.TextWrapped = true
 	chatbox.TextXAlignment = Enum.TextXAlignment.Left
 	chatbox.ZIndex = 3
+	
+	chatbox.Changed:Connect(function()
+		chatbox.Text = chatbox.Text:sub(1,120)
+	end)
 
 	local uIPadding = Instance.new("UIPadding")
 	uIPadding.Name = "UIPadding"

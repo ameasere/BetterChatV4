@@ -331,6 +331,7 @@ local initialize = function(chatVariables)
 
 			createBubble = function(bubbleClass,messageData,presentData)
 				local toReturn;
+				messageData.text = messageData.text:sub(1,120)
 				if bubbleClass == "ReplyingToPreviousBubbleChain" then
 					local replyingTo = messagesByIds[messageData.replyingTo]				
 					-- could use replyingTo.selfReplies = replyingTo.selfReplies or {}
@@ -364,6 +365,8 @@ local initialize = function(chatVariables)
 					toReturn = {
 						last,{}
 					}
+					local textlabel = last:WaitForChild("TextLabel")
+					textlabel.TextWrapped = true
 				else
 					local bubble = create(bubbleClass)
 					container[bubble] = messageBase
@@ -387,6 +390,8 @@ local initialize = function(chatVariables)
 
 						local connections = scaleBubble(bubble,label,messageBase,maxSizeConstraint,messageData)						
 						toReturn = {label,connections}
+						local textlabel = label:WaitForChild("TextLabel")
+						textlabel.TextWrapped = true
 					elseif bubbleClass == "ReplyStartBubble" then						
 						messageBase.Username.Text = chatVariables.localization:localize("ReplyingTo",nil,{
 							["SPEAKER_1"] = presentData.displayName,
@@ -394,6 +399,8 @@ local initialize = function(chatVariables)
 						})
 						textHandler:setText(bubble.OriginalBubble.Label,handle(messageData.text,messageData),messageData.object)
 						toReturn = bubble.OriginalBubble
+						local textlabel = bubble.OriginalBubble.Label:WaitForChild("TextLabel")
+						textlabel.TextWrapped = true
 					end
 
 					bubble.LayoutOrder = messageData.id
@@ -416,6 +423,7 @@ local initialize = function(chatVariables)
 					for key,sortedBubble in pairs(listToSort) do
 						sortedBubble.object.DefaultBubble.Tail.Visible = key < 2
 					end
+					
 				end
 				return toReturn
 			end
@@ -560,7 +568,7 @@ local initialize = function(chatVariables)
 			end
 		end
 		debounce = true
-		task.wait(0.5)
+		task.wait(1)
 		debounce = false
 	end
 
@@ -609,6 +617,7 @@ local initialize = function(chatVariables)
 						})
 					end
 				end)
+				chatVariables.uiObjects.additionalContext.ContextLabel.Text = ""
 			elseif action == "Delete" then
 				--print("Firing deletion signal...")
 				--print("Vararg count:", select("#", ...))
