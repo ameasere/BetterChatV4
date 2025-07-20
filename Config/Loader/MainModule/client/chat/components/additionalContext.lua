@@ -13,8 +13,8 @@ local initialize = function(chatVariables)
 	local scroller = chatVariables.uiObjects.messageScroller
 	local autofillBar = chatbar.AutofillBar
 	local actionIcon = chatbar.ActionIcon
-	
-	
+
+
 
 	local updateSizes = function()
 		local textBounds = utility.getTextBoundsFromObject(box,chatbar.AbsoluteSize.X - padding * 2)
@@ -27,18 +27,19 @@ local initialize = function(chatVariables)
 
 		local lastSize = scroller.Size
 
-		local sizeDifference = (scroller.Size - lastSize).Y.Offset
-		
-		additionalContext.Position = UDim2.fromOffset(0,
-			chatbar.Position.Y.Offset + 35
-		)
-	
+		--local sizeDifference = (scroller.Size - lastSize).Y.Offset
+
+		--additionalContext.Position = UDim2.fromOffset(0,
+		--	chatbar.Position.Y.Offset + 35
+        --)
+        
+        --additionalContext.Visible = false
+
 	end
 
 	utility.onPropertyChanged(box,"Text",updateSizes)
 	utility.updateSizes = updateSizes
-	
+
 end
 
 return {initialize = initialize}
-	

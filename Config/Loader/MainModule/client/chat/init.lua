@@ -12,6 +12,7 @@ local initialize = function(gui)
 	local chatbar = mainWindow.Chatbar
 	local scrollingFrame = mainWindow.Scroller
 	local channelBar = mainWindow.Channelbar
+	local additionalContext = mainWindow.Context
 	
 	local messageCreators = chatFolder.messageCreators
 	local components = chatFolder.components
@@ -31,7 +32,8 @@ local initialize = function(gui)
 			channelBar = channelBar,
 			window = mainWindow,
 			autofill = mainWindow.Autofill,
-			contextMenu = mainWindow.Parent.ContextMenu
+			contextMenu = mainWindow.Parent.ContextMenu,
+			additionalContext = additionalContext
 		},
 		
 		configurations = {
@@ -63,6 +65,7 @@ local initialize = function(gui)
 	chatVariables.components.autofills = require(components.autofill).initialize(chatVariables)
 	chatVariables.components.channelBar = require(components.channelBar).initialize(chatVariables)
 	chatVariables.components.chatWindow = require(components.chatWindow).initialize(chatVariables)
+	chatVariables.components.additionalContext = require(components.additionalContext).initialize(chatVariables)
 	
 	require(eventHandler).init(chatVariables)
 	chatVariables.components.bubbleChat = require(components.bubbleChat).initialize(chatVariables)

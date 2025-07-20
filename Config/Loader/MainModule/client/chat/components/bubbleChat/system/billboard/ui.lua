@@ -11,7 +11,9 @@ return {
 		local padding = config.Padding
 		local tweenInfo = TweenInfo.new(0.3,config.EasingStyle,Enum.EasingDirection.Out,0,true,0.3)
 		local label = Instance.new("TextLabel")
-		label.RichText = true
+        label.RichText = true
+        label.AnchorPoint = Vector2.new(0.5, 0.5)
+        label.Position = UDim2.new(0, 5, 0.5, 0)
 		
 		local getTextContent = function(text)
 			label.Text = text
@@ -38,7 +40,7 @@ return {
 			bubble.Position = UDim2.new(0.5,0,0.9,0)
 			bubble.Size = UDim2.fromOffset(pad(bounds.X,bounds.Y))
 
-			edge.CornerRadius = UDim.new(0,5)
+			edge.CornerRadius = UDim.new(0,12)
 			edge.Name = "edge"
 			edge.Parent = bubble
 			
@@ -75,13 +77,13 @@ return {
 			local dot = Instance.new("Frame")
 			local corner = Instance.new("UICorner")
 			
-			dot.Size = UDim2.fromOffset(x/4,x/4)
+			dot.Size = UDim2.fromOffset(x/8,x/8)
 			dot.BackgroundColor3 = config.TypingIndicatorColor
 			dot.Name = "TypingDot"
 			dot:SetAttribute("TypingIndicator",true)
 			
 			corner.Parent = dot
-			corner.CornerRadius = UDim.new(1,0)
+			corner.CornerRadius = UDim.new(100,0)
 			
 			return dot
 		end
@@ -196,7 +198,7 @@ return {
 					local bubble = create(text,parent,font,message)
 					
 					local constraint = Instance.new("UISizeConstraint")
-					constraint.MaxSize = Vector2.new(200,math.huge)
+					constraint.MaxSize = Vector2.new(math.huge,200)
 					constraint.Parent = bubble.Label
 					
 					bubble.Label.Size = UDim2.new(0,200,0,200)

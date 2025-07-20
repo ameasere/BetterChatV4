@@ -13,7 +13,7 @@ local initialize = function(chatVariables)
 	local scroller = chatVariables.uiObjects.messageScroller
 	local autofillBar = chatbar.AutofillBar
 	local actionIcon = chatbar.ActionIcon
-	
+
 	local updateSizes = function()
 		local textBounds = utility.getTextBoundsFromObject(box,chatbar.AbsoluteSize.X - padding * 2)
 		chatbar.Size = UDim2.new(
@@ -22,20 +22,20 @@ local initialize = function(chatVariables)
 		)
 
 		local cbs = channelBar.Visible and channelBar.AbsoluteSize.Y or 0
-		
+
 		local lastSize = scroller.Size
-		
+
 		scroller.Size = UDim2.new(
 			1,0,
 			0,window.AbsoluteSize.Y - chatbar.AbsoluteSize.Y - cbs - padding * (cbs > 0 and 4 or 3) - 27 -- 27px offset for the new Additional Context feature
 		)
-		
+
 		local sizeDifference = (scroller.Size - lastSize).Y.Offset
 		scroller.CanvasPosition -= Vector2.new(0,sizeDifference)
 
-		chatbar.Position = UDim2.fromOffset(0,
-			scroller.AbsoluteSize.Y + cbs + padding * (cbs > 0 and 2 or 1)
-		)
+		--chatbar.Position = UDim2.fromOffset(0,
+			--scroller.AbsoluteSize.Y + cbs + padding * (cbs > 0 and 2 or 1) + 27
+		--)
 
 		scroller.Position = UDim2.fromOffset(0,(cbs > 0 and (cbs + padding) or 0))
 	end
@@ -53,7 +53,7 @@ local initialize = function(chatVariables)
 			end
 		end
 	end)
-	
+
 	chatVariables.sendMessage = function(box,context)
 		local escaped = chatVariables.richText:escape(box.Text)
 		local parsed = chatVariables.richText:markdown(escaped,true)
@@ -66,7 +66,7 @@ local initialize = function(chatVariables)
 			["original"] = box.Text,
 			["context"] = context
 		}))
-		
+
 		additionalContext.ContextLabel.Text = ""
 	end
 
@@ -79,7 +79,7 @@ local initialize = function(chatVariables)
 			box.Text = ""
 		end
 	end)
-	
+
 	local lastText,expiresAt = "",0
 
 	local timeout = function()
@@ -101,7 +101,7 @@ local initialize = function(chatVariables)
 			chatVariables.network:fire("typingIndicator",false)
 		end
 	end
-	
+
 	local lastText = ""
 	box:GetPropertyChangedSignal("Text"):Connect(function()
 		logChange()
@@ -111,31 +111,33 @@ local initialize = function(chatVariables)
 			lastText = box.Text
 		end
 	end)
-	
+
 	box.Focused:Connect(logChange)
-	
+
 	box.PlaceholderText = chatVariables.localization:getChatbarPlaceholder()
-	
+
 	local component = {}
-	
+
 	function component:assignActionImage(imageId,context)
 		chatVariables.messageContext = context
 		box.Size = UDim2.new(1,-(box.TextSize * 2),1,0)
 		autofillBar.Size = UDim2.new(1,-(box.TextSize * 2),1,0)
 		actionIcon.Visible = true
-		actionIcon.Img.Image = imageId
+        actionIcon.Img.Image = imageId
+        additionalContext.Visible = true
 	end
-	
+
 	function component:unassign()
 		chatVariables.messageContext = nil
 		chatVariables.uiObjects.additionalContext.ContextLabel.Text = ""
 		box.Size = UDim2.new(1,0,1,0)
 		autofillBar.Size = UDim2.new(1,0,1,0)
-		actionIcon.Visible = false
+        actionIcon.Visible = false
+        additionalContext.Visible = false
 	end
-	
+
 	actionIcon.MouseButton1Click:Connect(component.unassign)
-	
+
 	return component
 end
 

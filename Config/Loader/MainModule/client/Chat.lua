@@ -1,5 +1,5 @@
 return function()
-	
+
 	local chat = Instance.new("ScreenGui")
 	chat.Name = "Chat"
 	chat.ResetOnSpawn = false
@@ -10,13 +10,13 @@ return function()
 	main.BackgroundTransparency = 0.75
 	main.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	main.BorderSizePixel = 0
-	main.Size = UDim2.fromOffset(400, 330)
+	main.Size = UDim2.fromOffset(400, 150)
 
 	local padding = Instance.new("UIPadding")
 	padding.Name = "Padding"
 	padding.PaddingBottom = UDim.new(0, 5)
-	padding.PaddingLeft = UDim.new(0, 5)
-	padding.PaddingRight = UDim.new(0, 5)
+	padding.PaddingLeft = UDim.new(0, 10)
+	padding.PaddingRight = UDim.new(0, 10)
 	padding.PaddingTop = UDim.new(0, 5)
 	padding.Parent = main
 
@@ -40,13 +40,15 @@ return function()
 	listLayout.Name = "ListLayout"
 	listLayout.Padding = UDim.new(0, 5)
 	listLayout.SortOrder = Enum.SortOrder.LayoutOrder
-	listLayout.Parent = scroller
+    listLayout.Parent = scroller
+    listLayout.VerticalAlignment = Enum.VerticalAlignment.Top
 
 	scroller.Parent = main
 
 	local uICorner = Instance.new("UICorner")
 	uICorner.Name = "UICorner"
-	uICorner.Parent = main
+    uICorner.Parent = main
+    uICorner.CornerRadius = UDim.new(0.05,0)
 
 	local chatbar = Instance.new("Frame")
 	chatbar.Name = "Chatbar"
@@ -73,17 +75,18 @@ return function()
 		Enum.FontWeight.Medium,
 		Enum.FontStyle.Normal
 	)
-	chatbox.PlaceholderColor3 = Color3.fromRGB(178, 178, 178)
+	chatbox.PlaceholderColor3 = Color3.fromRGB(255, 255, 255)
 	chatbox.PlaceholderText = "Type \"\\\" or tap to chat"
 	chatbox.Position = UDim2.fromScale(1, 0)
 	chatbox.Size = UDim2.fromScale(1, 1)
 	chatbox.Text = ""
-	chatbox.TextColor3 = Color3.fromRGB(0, 0, 0)
-	chatbox.TextSize = 13
+	chatbox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    chatbox.TextSize = 13
+    chatbox.TextTransparency = 0.3
 	chatbox.TextWrapped = true
 	chatbox.TextXAlignment = Enum.TextXAlignment.Left
 	chatbox.ZIndex = 3
-	
+
 	chatbox.Changed:Connect(function()
 		chatbox.Text = chatbox.Text:sub(1,120)
 	end)
@@ -124,13 +127,16 @@ return function()
 	autofillBar.Parent = chatbar
 
 	local actionIcon = Instance.new("ImageButton")
-	actionIcon.Name = "ActionIcon"
+    actionIcon.Name = "ActionIcon"
+    actionIcon.AnchorPoint = Vector2.new(0, 0.5)
 	actionIcon.BackgroundColor3 = Color3.fromRGB(253, 80, 111)
 	actionIcon.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	actionIcon.BorderSizePixel = 0
-	actionIcon.Position = UDim2.fromOffset(5, 5)
+    actionIcon.Position = UDim2.new(0, 5, 0.5, 0)
 	actionIcon.Size = UDim2.fromOffset(20, 20)
-	actionIcon.Visible = false
+    actionIcon.Visible = false
+    --actionIcon.Transparency = 0.75
+    --actionIcon.ImageTransparency = 0.75
 
 	local uICorner2 = Instance.new("UICorner")
 	uICorner2.Name = "UICorner"
@@ -283,9 +289,10 @@ return function()
 	contextMenu.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	contextMenu.BorderSizePixel = 0
 	contextMenu.Position = UDim2.fromScale(0.959, 0.279)
-	contextMenu.Size = UDim2.fromOffset(150, 0)
+	contextMenu.Size = UDim2.fromScale(0.109, 0.449)
 	contextMenu.Visible = false
-	contextMenu.ZIndex = 3
+    contextMenu.ZIndex = 3
+    contextMenu.Transparency = 1
 
 	local uICorner6 = Instance.new("UICorner")
 	uICorner6.Name = "UICorner"
@@ -295,36 +302,42 @@ return function()
 	uIListLayout1.Name = "UIListLayout"
 	uIListLayout1.Padding = UDim.new(0, 6)
 	uIListLayout1.SortOrder = Enum.SortOrder.LayoutOrder
-	uIListLayout1.Parent = contextMenu
+    uIListLayout1.Parent = contextMenu
+    uIListLayout1.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
 	local reply = Instance.new("TextButton")
 	reply.Name = "Reply"
-	reply.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	reply.BackgroundTransparency = 1
+	reply.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+	reply.BackgroundTransparency = 0.35
 	reply.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	reply.BorderSizePixel = 0
 	reply.FontFace = Font.new(
 		"rbxasset://fonts/families/GothamSSm.json",
-		Enum.FontWeight.Medium,
+        Enum.FontWeight.Bold,
 		Enum.FontStyle.Normal
 	)
 	reply.LayoutOrder = 1
-	reply.Size = UDim2.new(1, 0, 0, 20)
+    reply.Size =  UDim2.new(1, 0, 0.1, 0)
 	reply.Text = "Reply"
 	reply.TextColor3 = Color3.fromRGB(255, 255, 255)
 	reply.TextSize = 14
-	reply.TextXAlignment = Enum.TextXAlignment.Left
-	reply.ZIndex = 3
+	reply.TextXAlignment = Enum.TextXAlignment.Center
+    reply.ZIndex = 3
+    
+    local uic_reply = Instance.new("UICorner")
+    uic_reply.Parent=reply
+    uic_reply.CornerRadius = UDim.new(1,0)
 
 	local icon = Instance.new("ImageLabel")
 	icon.Name = "Icon"
-	icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	icon.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 	icon.BackgroundTransparency = 1
 	icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	icon.BorderSizePixel = 0
 	icon.Image = "http://www.roblox.com/asset/?id=6035067844"
-	icon.Position = UDim2.fromOffset(-25, 0)
-	icon.Size = UDim2.fromScale(0, 1)
+    icon.AnchorPoint = Vector2.new(0.5, 0.5)
+    icon.Position = UDim2.fromScale(0.15, 0.5)
+    icon.Size = UDim2.fromScale(.5, .5)
 	icon.ZIndex = 3
 
 	local uIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
@@ -337,47 +350,50 @@ return function()
 
 	local uIPadding5 = Instance.new("UIPadding")
 	uIPadding5.Name = "UIPadding"
-	uIPadding5.PaddingLeft = UDim.new(0, 25)
+	--uIPadding5.PaddingLeft = UDim.new(0, 25)
 	uIPadding5.Parent = reply
 
-	local frame = Instance.new("Frame")
-	frame.Name = "Frame"
-	frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-	frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	frame.BorderSizePixel = 0
-	frame.Position = UDim2.new(0, -25, 1, 2)
-	frame.Size = UDim2.new(1, 25, 0, 1)
-	frame.ZIndex = 3
-	frame.Parent = reply
+	--local frame = Instance.new("Frame")
+	--frame.Name = "Frame"
+	--frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+	--frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	--frame.BorderSizePixel = 0
+	--frame.Position = UDim2.new(0, -25, 1, 2)
+	--frame.Size = UDim2.new(1, 25, 0, 1)
+	--frame.ZIndex = 3
+	--frame.Parent = reply
 
 	reply.Parent = contextMenu
 
 	local uIPadding6 = Instance.new("UIPadding")
 	uIPadding6.Name = "UIPadding"
 	uIPadding6.PaddingBottom = UDim.new(0, 5)
-	uIPadding6.PaddingLeft = UDim.new(0, 5)
-	uIPadding6.PaddingRight = UDim.new(0, 5)
+	--uIPadding6.PaddingLeft = UDim.new(0, 10)
+	--uIPadding6.PaddingRight = UDim.new(0, 10)
 	uIPadding6.PaddingTop = UDim.new(0, 5)
 	uIPadding6.Parent = contextMenu
 
 	local save = Instance.new("TextButton")
 	save.Name = "Save"
 	save.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	save.BackgroundTransparency = 1
+	save.BackgroundTransparency = 0.35
 	save.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	save.BorderSizePixel = 0
 	save.FontFace = Font.new(
 		"rbxasset://fonts/families/GothamSSm.json",
-		Enum.FontWeight.Medium,
+        Enum.FontWeight.Bold,
 		Enum.FontStyle.Normal
 	)
-	save.LayoutOrder = 1
-	save.Size = UDim2.new(1, 0, 0, 20)
+	save.LayoutOrder = 3
+    save.Size =  UDim2.new(1, 0, 0.1, 0)
 	save.Text = "Save"
 	save.TextColor3 = Color3.fromRGB(255, 255, 255)
 	save.TextSize = 14
-	save.TextXAlignment = Enum.TextXAlignment.Left
-	save.ZIndex = 3
+	save.TextXAlignment = Enum.TextXAlignment.Center
+    save.ZIndex = 3
+    local uic_SAVE = Instance.new("UICorner")
+    uic_SAVE.Parent=save
+    uic_SAVE.CornerRadius = UDim.new(1,0)
 
 	local icon1 = Instance.new("ImageLabel")
 	icon1.Name = "Icon"
@@ -386,8 +402,9 @@ return function()
 	icon1.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	icon1.BorderSizePixel = 0
 	icon1.Image = "http://www.roblox.com/asset/?id=6031243319"
-	icon1.Position = UDim2.fromOffset(-25, 0)
-	icon1.Size = UDim2.fromScale(0, 1)
+    icon1.AnchorPoint = Vector2.new(0.5, 0.5)
+    icon1.Position = UDim2.fromScale(0.15, 0.5)
+    icon1.Size = UDim2.fromScale(.5, .5)
 	icon1.ZIndex = 3
 
 	local uIAspectRatioConstraint1 = Instance.new("UIAspectRatioConstraint")
@@ -400,39 +417,43 @@ return function()
 
 	local uIPadding7 = Instance.new("UIPadding")
 	uIPadding7.Name = "UIPadding"
-	uIPadding7.PaddingLeft = UDim.new(0, 25)
+	--uIPadding7.PaddingLeft = UDim.new(0, 25)
 	uIPadding7.Parent = save
 
-	local frame1 = Instance.new("Frame")
-	frame1.Name = "Frame"
-	frame1.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-	frame1.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	frame1.BorderSizePixel = 0
-	frame1.Position = UDim2.new(0, -25, 1, 2)
-	frame1.Size = UDim2.new(1, 25, 0, 1)
-	frame1.ZIndex = 3
-	frame1.Parent = save
+	--local frame1 = Instance.new("Frame")
+	--frame1.Name = "Frame"
+	--frame1.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+	--frame1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	--frame1.BorderSizePixel = 0
+	--frame1.Position = UDim2.new(0, -25, 1, 2)
+	--frame1.Size = UDim2.new(1, 25, 0, 1)
+	--frame1.ZIndex = 3
+	--frame1.Parent = save
 
 	save.Parent = contextMenu
 
 	local delete = Instance.new("TextButton")
 	delete.Name = "Delete"
-	delete.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	delete.BackgroundTransparency = 1
+	delete.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+	delete.BackgroundTransparency = 0.35
 	delete.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	delete.BorderSizePixel = 0
 	delete.FontFace = Font.new(
 		"rbxasset://fonts/families/GothamSSm.json",
-		Enum.FontWeight.Medium,
+        Enum.FontWeight.Bold,
 		Enum.FontStyle.Normal
 	)
-	delete.LayoutOrder = 2
-	delete.Size = UDim2.new(1, 0, 0, 20)
+	delete.LayoutOrder = 4
+    delete.Size = UDim2.new(1, 0, 0.1, 0)
 	delete.Text = "Delete"
 	delete.TextColor3 = Color3.fromRGB(255, 204, 204)
 	delete.TextSize = 14
-	delete.TextXAlignment = Enum.TextXAlignment.Left
-	delete.ZIndex = 3
+	delete.TextXAlignment = Enum.TextXAlignment.Center
+    delete.ZIndex = 3
+    
+    local uic_delete = Instance.new("UICorner")
+    uic_delete.Parent=delete
+    uic_delete.CornerRadius = UDim.new(1,0)
 
 	local icon2 = Instance.new("ImageLabel")
 	icon2.Name = "Icon"
@@ -441,9 +462,10 @@ return function()
 	icon2.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	icon2.BorderSizePixel = 0
 	icon2.Image = "http://www.roblox.com/asset/?id=6022668885"
-	icon2.ImageColor3 = Color3.fromRGB(255, 204, 204)
-	icon2.Position = UDim2.fromOffset(-25, 0)
-	icon2.Size = UDim2.fromScale(0, 1)
+    icon2.ImageColor3 = Color3.fromRGB(255, 204, 204)
+    icon2.AnchorPoint = Vector2.new(0.5, 0.5)
+	icon2.Position = UDim2.fromScale(0.15, 0.5)
+	icon2.Size = UDim2.fromScale(.5, .5)
 	icon2.ZIndex = 3
 
 	local uIAspectRatioConstraint2 = Instance.new("UIAspectRatioConstraint")
@@ -454,31 +476,35 @@ return function()
 
 	icon2.Parent = delete
 
-	local uIPadding8 = Instance.new("UIPadding")
-	uIPadding8.Name = "UIPadding"
-	uIPadding8.PaddingLeft = UDim.new(0, 25)
-	uIPadding8.Parent = delete
+	--local uIPadding8 = Instance.new("UIPadding")
+	--uIPadding8.Name = "UIPadding"
+	--uIPadding8.PaddingLeft = UDim.new(0, 25)
+	--uIPadding8.Parent = delete
 
 	delete.Parent = contextMenu
 
 	local edit = Instance.new("TextButton")
 	edit.Name = "Edit"
 	edit.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	edit.BackgroundTransparency = 1
+	edit.BackgroundTransparency = 0.35
 	edit.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	edit.BorderSizePixel = 0
 	edit.FontFace = Font.new(
 		"rbxasset://fonts/families/GothamSSm.json",
-		Enum.FontWeight.Medium,
+		Enum.FontWeight.Bold,
 		Enum.FontStyle.Normal
 	)
-	edit.LayoutOrder = 1
-	edit.Size = UDim2.new(1, 0, 0, 20)
+	edit.LayoutOrder = 2
+	edit.Size = UDim2.new(1, 0, 0, 33)
 	edit.Text = "Edit"
 	edit.TextColor3 = Color3.fromRGB(255, 255, 255)
 	edit.TextSize = 14
-	edit.TextXAlignment = Enum.TextXAlignment.Left
-	edit.ZIndex = 3
+	edit.TextXAlignment = Enum.TextXAlignment.Center
+    edit.ZIndex = 3
+    
+    local uic_edit = Instance.new("UICorner")
+    uic_edit.Parent=edit
+    uic_edit.CornerRadius = UDim.new(1,0)
 
 	local icon3 = Instance.new("ImageLabel")
 	icon3.Name = "Icon"
@@ -487,8 +513,9 @@ return function()
 	icon3.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	icon3.BorderSizePixel = 0
 	icon3.Image = "http://www.roblox.com/asset/?id=6034941708"
-	icon3.Position = UDim2.fromOffset(-25, 0)
-	icon3.Size = UDim2.fromScale(0, 1)
+    icon3.AnchorPoint = Vector2.new(0.5, 0.5)
+    icon3.Position = UDim2.fromScale(0.15, 0.5)
+    icon3.Size = UDim2.fromScale(.5, .5)
 	icon3.ZIndex = 3
 
 	local uIAspectRatioConstraint3 = Instance.new("UIAspectRatioConstraint")
@@ -499,20 +526,20 @@ return function()
 
 	icon3.Parent = edit
 
-	local uIPadding9 = Instance.new("UIPadding")
-	uIPadding9.Name = "UIPadding"
-	uIPadding9.PaddingLeft = UDim.new(0, 25)
-	uIPadding9.Parent = edit
+	--local uIPadding9 = Instance.new("UIPadding")
+	--uIPadding9.Name = "UIPadding"
+	--uIPadding9.PaddingLeft = UDim.new(0, 25)
+	--uIPadding9.Parent = edit
 
-	local frame2 = Instance.new("Frame")
-	frame2.Name = "Frame"
-	frame2.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-	frame2.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	frame2.BorderSizePixel = 0
-	frame2.Position = UDim2.new(0, -25, 1, 2)
-	frame2.Size = UDim2.new(1, 25, 0, 1)
-	frame2.ZIndex = 3
-	frame2.Parent = edit
+	--local frame2 = Instance.new("Frame")
+	--frame2.Name = "Frame"
+	--frame2.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+	--frame2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	--frame2.BorderSizePixel = 0
+	--frame2.Position = UDim2.new(0, -25, 1, 2)
+	--frame2.Size = UDim2.new(1, 25, 0, 1)
+	--frame2.ZIndex = 3
+	--frame2.Parent = edit
 
 	edit.Parent = contextMenu
 
@@ -522,29 +549,33 @@ return function()
 	reactions.BackgroundTransparency = 1
 	reactions.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	reactions.BorderSizePixel = 0
-	reactions.Size = UDim2.new(1, 0, 0, 35)
-	reactions.ZIndex = 3
+	reactions.Size = UDim2.new(1, 0, 0.123, 0)
+    reactions.ZIndex = 3
+    reactions.LayoutOrder = -1
 
-	local frame3 = Instance.new("Frame")
-	frame3.Name = "Frame"
-	frame3.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-	frame3.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	frame3.BorderSizePixel = 0
-	frame3.Position = UDim2.new(0, 0, 1, 2)
-	frame3.Size = UDim2.new(1, 0, 0, 1)
-	frame3.ZIndex = 3
-	frame3.Parent = reactions
+	local GAPS = Instance.new("Frame")
+	GAPS.Name = "GAPS"
+	GAPS.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+	GAPS.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	GAPS.BorderSizePixel = 0
+	GAPS.Position = UDim2.new(0, 0, 1, 2)
+	GAPS.Size = UDim2.new(1, 0, 0.025, 0)
+	GAPS.ZIndex = 3
+    GAPS.Parent = contextMenu
+    GAPS.LayoutOrder = 0
+    GAPS.BackgroundTransparency = 1
 
 	local options = Instance.new("Frame")
 	options.Name = "Options"
 	options.AnchorPoint = Vector2.new(0.5, 0.5)
-	options.AutomaticSize = Enum.AutomaticSize.X
+	options.AutomaticSize = Enum.AutomaticSize.Y
 	options.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 	options.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	options.BorderSizePixel = 0
 	options.Position = UDim2.fromScale(0.5, 0.5)
-	options.Size = UDim2.new(1, 0, 0, 30)
-	options.ZIndex = 3
+	options.Size = UDim2.new(1, 0, 1, 0)
+    options.ZIndex = 3
+    options.SizeConstraint = Enum.SizeConstraint.RelativeXY
 
 	local uIListLayout2 = Instance.new("UIListLayout")
 	uIListLayout2.Name = "UIListLayout"
@@ -556,71 +587,80 @@ return function()
 	uIListLayout2.Parent = options
 
 	local textButton1 = Instance.new("TextButton")
-	textButton1.Name = "TextButton"
+    textButton1.Name = "TextButton"
+    textButton1.AnchorPoint = Vector2.new(0.5, 0.5)
 	textButton1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	textButton1.BackgroundTransparency = 1
 	textButton1.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	textButton1.BorderSizePixel = 0
 	textButton1.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json")
-	textButton1.Size = UDim2.fromOffset(20, 20)
+	textButton1.Size = UDim2.fromScale(0.85, 0.85)
 	textButton1.Text = "😂"
 	textButton1.TextColor3 = Color3.fromRGB(255, 255, 255)
 	textButton1.TextScaled = true
 	textButton1.TextSize = 14
 	textButton1.TextWrapped = true
 	textButton1.ZIndex = 3
-	textButton1.Parent = options
+    textButton1.Parent = options
+    textButton1.SizeConstraint = Enum.SizeConstraint.RelativeYY
 
 	local textButton2 = Instance.new("TextButton")
-	textButton2.Name = "TextButton"
+    textButton2.Name = "TextButton"
+    textButton2.AnchorPoint = Vector2.new(0.5, 0.5)
 	textButton2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	textButton2.BackgroundTransparency = 1
 	textButton2.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	textButton2.BorderSizePixel = 0
 	textButton2.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json")
-	textButton2.Size = UDim2.fromOffset(20, 20)
+    textButton2.Size = UDim2.fromScale(0.85, 0.85)
 	textButton2.Text = "😢"
 	textButton2.TextColor3 = Color3.fromRGB(255, 255, 255)
 	textButton2.TextScaled = true
 	textButton2.TextSize = 14
 	textButton2.TextWrapped = true
 	textButton2.ZIndex = 3
-	textButton2.Parent = options
+    textButton2.Parent = options
+    textButton2.SizeConstraint = Enum.SizeConstraint.RelativeYY
 
 	local textButton3 = Instance.new("TextButton")
-	textButton3.Name = "TextButton"
+    textButton3.Name = "TextButton"
+    textButton3.AnchorPoint = Vector2.new(0.5, 0.5)
 	textButton3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	textButton3.BackgroundTransparency = 1
 	textButton3.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	textButton3.BorderSizePixel = 0
 	textButton3.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json")
-	textButton3.Size = UDim2.fromOffset(20, 20)
+    textButton3.Size = UDim2.fromScale(0.85, 0.85)
 	textButton3.Text = "🤔"
 	textButton3.TextColor3 = Color3.fromRGB(255, 255, 255)
 	textButton3.TextScaled = true
 	textButton3.TextSize = 14
 	textButton3.TextWrapped = true
 	textButton3.ZIndex = 3
-	textButton3.Parent = options
+    textButton3.Parent = options
+    textButton3.SizeConstraint = Enum.SizeConstraint.RelativeYY
 
 	local textButton4 = Instance.new("TextButton")
-	textButton4.Name = "TextButton"
+    textButton4.Name = "TextButton"
+    textButton4.AnchorPoint = Vector2.new(0.5, 0.5)
 	textButton4.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	textButton4.BackgroundTransparency = 1
 	textButton4.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	textButton4.BorderSizePixel = 0
 	textButton4.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json")
-	textButton4.Size = UDim2.fromOffset(20, 20)
+    textButton4.Size = UDim2.fromScale(0.85, 0.85)
 	textButton4.Text = "❤️"
 	textButton4.TextColor3 = Color3.fromRGB(255, 255, 255)
 	textButton4.TextScaled = true
 	textButton4.TextSize = 14
 	textButton4.TextWrapped = true
 	textButton4.ZIndex = 3
-	textButton4.Parent = options
+    textButton4.Parent = options
+    textButton4.SizeConstraint = Enum.SizeConstraint.RelativeYY
 
 	local add = Instance.new("ImageButton")
-	add.Name = "Add"
+    add.Name = "Add"
+    add.AnchorPoint = Vector2.new(0.5, 0.5)
 	add.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	add.BackgroundTransparency = 1
 	add.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -643,17 +683,28 @@ return function()
 	uIPadding10.PaddingRight = UDim.new(0, 10)
 	uIPadding10.PaddingTop = UDim.new(0, 10)
 	uIPadding10.Parent = options
-	
+
 	local additionalContext = Instance.new("Frame")
 	additionalContext.Name = "Context"
-	additionalContext.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	additionalContext.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	additionalContext.BackgroundTransparency = 1
 	additionalContext.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	additionalContext.BorderSizePixel = 0
-	additionalContext.Size = UDim2.fromOffset(400, 25)
-	
+    additionalContext.Size = UDim2.fromOffset(250, 25)
+    additionalContext.Position = UDim2.new(0,0, 0,390)
+    additionalContext.Transparency = 0.75
+    additionalContext.Visible = false
+    
+    
+    local uic_additionalContext = Instance.new("UICorner")
+    uic_additionalContext.Name = "UICorner"
+    uic_additionalContext.CornerRadius = UDim.new(0, 8)
+    uic_additionalContext.Parent = additionalContext
+
 	local additionalContextLabel = Instance.new("TextLabel")
-	additionalContextLabel.Name = "ContextLabel"
+    additionalContextLabel.Name = "ContextLabel"
+    additionalContextLabel.Position = UDim2.new(0,0, 0.5,0)
+    additionalContextLabel.AnchorPoint = Vector2.new(0, 0.5)
 	additionalContextLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 	additionalContextLabel.BackgroundTransparency = 1
 	additionalContextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -663,7 +714,7 @@ return function()
 	additionalContextLabel.TextXAlignment = Enum.TextXAlignment.Left
 	additionalContextLabel.Text = ""
 	additionalContextLabel.Parent = additionalContext
-	
+
 	local uICorner8 = Instance.new("UICorner")
 	uICorner8.Name = "UICorner"
 	uICorner8.CornerRadius = UDim.new(1, 0)
@@ -675,10 +726,16 @@ return function()
 
 	reactions.Parent = contextMenu
 
-	contextMenu.Parent = chat
-	
+    contextMenu.Parent = chat
+    
+    
+    
+    
 
-	
+
 
 	return chat
 end
+
+
+

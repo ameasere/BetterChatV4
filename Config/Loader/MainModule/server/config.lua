@@ -1,3 +1,3 @@
 return {
-	["AdonisCompatibility"] = true
+	["AdonisCompatibility"] = false
 }

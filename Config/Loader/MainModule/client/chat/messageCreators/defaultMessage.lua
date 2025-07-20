@@ -216,6 +216,7 @@ local initialize = function(chatVariables)
 
 			if not messageData.disableBubbling then
 				messageBase.Username.TextSize = label.TextSize - 1
+				print(messageBase.Username.TextSize)
 				messageBase.Username.UIPadding.PaddingLeft = UDim.new(
 					0,
 					icon.Visible and label.TextSize + 10 + uiPadding or 0
@@ -307,7 +308,12 @@ local initialize = function(chatVariables)
 
 			local connections = {}
 
-			local requestIconInformation = function()		
+			local requestIconInformation = function()
+				local numOfChildren = #messageBase:GetChildren()
+				if numOfChildren == 0 then
+					-- Print the full path for it
+					return false, 0
+				end
 				return messageBase.Actual.Icon.Visible,messageBase.Actual.Icon.AbsoluteSize.X
 			end
 
@@ -317,7 +323,7 @@ local initialize = function(chatVariables)
 
 				local maximumSize = absoluteSize.X - (iconEnabled and (iconSize + uiPadding) or 0)
 				maxSizeConstraint.MaxSize = Vector2.new(maximumSize,math.huge)
-				if not messageData.disableBubbling then
+				if not messageData.disableBubbling and #messageBase:GetChildren() > 0 then
 					messageBase.Username.UIPadding.PaddingLeft = UDim.new(0,iconEnabled and (iconSize + uiPadding) or 0)
 				end
 			end
@@ -567,9 +573,6 @@ local initialize = function(chatVariables)
 				end
 			end
 		end
-		debounce = true
-		task.wait(1)
-		debounce = false
 	end
 
 	-- Context menu:
@@ -618,10 +621,13 @@ local initialize = function(chatVariables)
 					end
 				end)
 				chatVariables.uiObjects.additionalContext.ContextLabel.Text = ""
+				chatVariables.components.chatbar:unassign()
 			elseif action == "Delete" then
 				--print("Firing deletion signal...")
 				--print("Vararg count:", select("#", ...))
 				chatVariables.network:fire("deleteMessage",currentContext.data.guid,({...})[1])
+				chatVariables.uiObjects.additionalContext.ContextLabel.Text = ""
+				chatVariables.components.chatbar:unassign()
 			elseif action == "React" then
 				--print("Firing reaction signal...")
 				chatVariables.network:fire("reactToMessage",currentContext.data.guid,({...})[1])
